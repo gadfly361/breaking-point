@@ -88,10 +88,6 @@
               :<- [::screen-width]
               (->get-screen breakpoints))
 
-  (rf/reg-sub ::screen
-              :<- [::screen-width]
-              (->get-screen breakpoints))
-
   (let [screen-keys (some->> breakpoints
                              (map-indexed vector)
                              (filter (fn [[i k]]

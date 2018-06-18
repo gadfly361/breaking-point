@@ -3,11 +3,9 @@
 > " I don’t know; every man has his breaking point."
 > - Red, The Shawshank Redemption
 
-BREAKING-POINT lets you quickly name and define screen breakpoints in
+BREAKING-POINT lets you quickly define and subscribe to screen breakpoints in
 your [re-frame](https://github.com/Day8/re-frame)
-application. BREAKING-POINT will automatically register several
-convenience subscriptions for you based on your breakpoint
-definitions.
+application.
 
 Add the following to the :dependencies vector in your project.clj file.
 

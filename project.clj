@@ -1,5 +1,5 @@
 (defproject breaking-point "0.1.0"
-  :description "A polling events library for re-frame"
+  :description "Quickly define and subscribe to screen breakpoints for re-frame apps"
   :url "https://github.com/gadfly361/breaking-point"
   :license {:name "MIT"}
   :scm {:name "git"
