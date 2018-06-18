@@ -32,7 +32,7 @@ And in your ns:
 | key                       | type                                  | default   | required? |
 |---------------------------|---------------------------------------|-----------|-----------|
 | :breakpoints              | [keyword int keyword int ... keyword] |           | **yes**   |
-| :debounce-ms              | init                                  | 0         | no        |
+| :debounce-ms              | int                                   | 0         | no        |
 
 Breakpoints takes a series of keywords alternating with ints that will
 be used as breakpoints. Make sure the breakpoints are **ascending** in
@@ -62,13 +62,13 @@ subscriptions based on the provided keywords and breakpoints that you
 supplied.
 
 ```clojure
-(rf/subscribe [:bp/screen-width]) ;; will be an int
-(rf/subscribe [:bp/screen]) ;; will be one of the following: :mobile, :tablet, :small-monitor, :large-monitor
+(re-frame/subscribe [:bp/screen-width]) ;; will be an int
+(re-frame/subscribe [:bp/screen]) ;; will be one of the following: :mobile, :tablet, :small-monitor, :large-monitor
 
-(rf/subscribe [:bp/mobile?]) ;; true if screen-width is < 768
-(rf/subscribe [:bp/tablet?]) ;; true if screen-width is >= 768 and < 992
-(rf/subscribe [:bp/small-monitor?]) ;; will be true if window width is >= 992 and < 1200
-(rf/subscribe [:bp/large-monitor?]) ;; will be true if window width is >= 1200
+(re-frame/subscribe [:bp/mobile?]) ;; true if screen-width is < 768
+(re-frame/subscribe [:bp/tablet?]) ;; true if screen-width is >= 768 and < 992
+(re-frame/subscribe [:bp/small-monitor?]) ;; will be true if window width is >= 992 and < 1200
+(re-frame/subscribe [:bp/large-monitor?]) ;; will be true if window width is >= 1200
 ```
 
 Note, `::bp/set-breakpoints` should only be dispatched **once** when
