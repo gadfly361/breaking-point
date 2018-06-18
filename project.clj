@@ -1,4 +1,4 @@
-(defproject breaking-point "0.1.0"
+(defproject breaking-point "0.1.1"
   :description "Quickly define and subscribe to screen breakpoints for re-frame apps"
   :url "https://github.com/gadfly361/breaking-point"
   :license {:name "MIT"}

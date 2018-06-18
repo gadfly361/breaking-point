@@ -10,7 +10,7 @@ application.
 Add the following to the :dependencies vector in your project.clj file.
 
 ```clojure
-[breaking-point "0.1.0"]
+[breaking-point "0.1.1"]
 ```
 
 And in your ns:
@@ -75,66 +75,10 @@ the application *first* loads.
 
 # Usage
 
-Create a new re-frame application.
+Create a new re-frame application and add the `+breaking-point` option.
 
 ```
-lein new re-frame foo
-```
-
-Add the following to the `:dependencies` vector of your *project.clj*
-file.
-
-```clojure
-[breaking-point "0.1.0"]
-```
-
-Then require breaking-point in the core namespace, and add the
-`::bp/set-breakpoints` event. Note, this needs to be dispatched **only
-once**, when the application *first* loads.
-
-```clojure
-(ns foo.core
-  (:require [reagent.core :as reagent]
-            [re-frame.core :as re-frame]
-
-            ;; Add this (1 of 2)
-            [breaking-point.core :as bp]
-
-            [foo.events :as events]
-            [foo.views :as views]
-            [foo.config :as config]
-            ))
-
-(defn dev-setup []
-  (when config/debug?
-    (enable-console-print!)
-    (println "dev mode")))
-
-(defn mount-root []
-  (re-frame/clear-subscription-cache!)
-  (reagent/render [views/main-panel]
-                  (.getElementById js/document "app")))
-
-(defn ^:export init []
-  (re-frame/dispatch-sync [::events/initialize-db])
-
-  ;; And this (2 of 2)
-  (re-frame/dispatch-sync [::bp/set-breakpoints
-                           {;; required
-                            :breakpoints [:mobile
-                                          768
-                                          :tablet
-                                          992
-                                          :small-monitor
-                                          1200
-                                          :large-monitor]
-  
-                            ;; optional
-                            :debounce-ms 166
-                            }])
-
-  (dev-setup)
-  (mount-root))
+lein new re-frame foo +breaking-point
 ```
 
 # Questions
