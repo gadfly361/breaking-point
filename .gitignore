@@ -1,0 +1,10 @@
+/*.log
+/target
+/*-init.clj
+/dev-resources/public/js/compiled
+out
+
+pom.xml
+pom.xml.asc
+
+*.*~
