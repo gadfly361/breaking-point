@@ -61,6 +61,7 @@ supplied.
 
 ```clojure
 (re-frame/subscribe [:bp/screen-width]) ;; will be an int
+(re-frame/subscribe [:bp/screen-height]) ;; will be an int
 (re-frame/subscribe [:bp/screen]) ;; will be one of the following: :mobile, :tablet, :small-monitor, :large-monitor
 
 (re-frame/subscribe [:bp/orientation]) ;; will be either :portrait or :landscape
