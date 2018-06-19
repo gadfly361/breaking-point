@@ -27,43 +27,58 @@
 ;; COFX
 
 (rf/reg-cofx
- ::screen-width
+ ::screen-dimensions
  (fn [coeffect]
-   (let [screen-width (or (.-innerWidth js/window)
-                          (-> js/document
-                              .-documentElement
-                              .-clientWidth)
-                          (-> js/document
-                              .-body
-                              .-clientWidth))]
-     (assoc coeffect :screen-width screen-width))))
+   (let [screen-width  (or (some-> js/window
+                                   .-innerWidth)
+                           (some-> js/document
+                                   .-documentElement
+                                   .-clientWidth)
+                           (some-> js/document
+                                   .-body
+                                   .-clientWidth))
+         screen-height (or (some-> js/window
+                                   .-innerHeight)
+                           (some-> js/document
+                                   .-documentElement
+                                   .-clientHeight)
+                           (some-> js/document
+                                   .-body
+                                   .-clientHeight))]
+     (assoc coeffect
+            :screen-width screen-width
+            :screen-height screen-height))))
 
 
 ;; Events
 
-(defn set-screen-width
+(defn set-screen-dimensions
   [{:keys [db
-           screen-width]} _]
-  {:db (assoc-in db
-                 [::breakpoints :screen-width]
-                 screen-width)})
+           screen-width
+           screen-height]} _]
+  {:db (-> db
+           (assoc-in [::breakpoints :screen-width] screen-width)
+           (assoc-in [::breakpoints :screen-height] screen-height))})
 
-(rf/reg-event-fx ::set-screen-width
-                 [(rf/inject-cofx ::screen-width)]
-                 set-screen-width)
+(rf/reg-event-fx ::set-screen-dimensions
+                 [(rf/inject-cofx ::screen-dimensions)]
+                 set-screen-dimensions)
 
-(rf/reg-event-fx ::set-screen-width-debounced
+(rf/reg-event-fx ::set-screen-dimensions-debounced
                  (fn [_ [_ debounce-ms]]
                    {:dispatch-debounce [{:id      ::calcaulate-width-after-resize
                                          :timeout debounce-ms
                                          :action  :dispatch
-                                         :event   [::set-screen-width]}]}))
+                                         :event   [::set-screen-dimensions]}]}))
 
 
 ;; Subs
 
 (defn get-screen-width [db _]
   (get-in db [::breakpoints :screen-width]))
+
+(defn get-screen-height [db _]
+  (get-in db [::breakpoints :screen-height]))
 
 
 (defn ->get-screen [breakpoints]
@@ -81,12 +96,37 @@
        (partition-all 2 breakpoints)))))
 
 
+(defn get-orientation
+  [[screen-width
+    screen-height] _]
+  (if (> screen-height
+         screen-width)
+    :portrait
+    :landscape))
+
+
 (defn register-subs [breakpoints]
   (rf/reg-sub ::screen-width get-screen-width)
+  (rf/reg-sub ::screen-height get-screen-height)
 
   (rf/reg-sub ::screen
               :<- [::screen-width]
               (->get-screen breakpoints))
+
+  (rf/reg-sub ::orientation
+              :<- [::screen-width]
+              :<- [::screen-height]
+              get-orientation)
+
+  (rf/reg-sub ::portrait?
+              :<- [::orientation]
+              (fn [orientation _]
+                (= orientation :portrait)))
+
+  (rf/reg-sub ::landscape?
+              :<- [::orientation]
+              (fn [orientation _]
+                (= orientation :landscape)))
 
   (let [screen-keys (some->> breakpoints
                              (map-indexed vector)
@@ -108,11 +148,11 @@
                                debounce-ms]
                         :as   opts}]
   (register-subs breakpoints)
-  (rf/dispatch [::set-screen-width])
+  (rf/dispatch [::set-screen-dimensions])
   (.addEventListener js/window "resize"
                      #(if debounce-ms
-                        (rf/dispatch [::set-screen-width-debounced debounce-ms])
-                        (rf/dispatch [::set-screen-width]))
+                        (rf/dispatch [::set-screen-dimensions-debounced debounce-ms])
+                        (rf/dispatch [::set-screen-dimensions]))
                      true))
 
 (rf/reg-fx
